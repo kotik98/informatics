@@ -139,7 +139,7 @@ bool Vector2D::operator!=(const Vector2D &v2) {
 Vector2D Vector2D::operator+(const Vector2D &v2) {
 	Vector2D res;
 	res.setX(this->getX() + v2.getX());
-	res.setY(this->getX() + v2.getY());
+	res.setY(this->getY() + v2.getY());
 	return res;
 }
 
@@ -168,7 +168,7 @@ istream& operator >> (std::istream &is, Vector2D &v) {
 Vector2D Vector2D::operator-(const Vector2D &v2) {
 	Vector2D res;
 	res.setX(this->getX() - v2.getX());
-	res.setY(this->getX() - v2.getY());
+	res.setY(this->getY() - v2.getY());
 	return res;
 }
 
