@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 
-
 using namespace std;
 
 struct node {
@@ -36,8 +35,8 @@ public:
 	size_t Size() { return this->size; }
 	void Insert(int v);
 	void print_tree();
-	void Erase(int& n);
-	node* search_by_val(int& v);
+	void Erase(int n);
+	node* search_by_val(int v);
 	node* Min();
 	node* Max();
 	node* Begin();
@@ -101,6 +100,9 @@ node* tree::erase(node* p, int& k)
 		if (!r) {
 			return l;
 		}
+		if (!l) {
+			return r;
+		}
 		node* m = min(r);
 		m->right = balancemin(r);
 		m->left = l;
@@ -123,8 +125,7 @@ int & tree::operator[](int j)
 {
 	if (j >= size) {
 		cout << "no such element" << endl;
-		int a = -1;
-		return a;
+		throw ;
 	}
 	node* t = Begin();
 	for (int i = 0; i < j; i++) {
@@ -172,10 +173,13 @@ node* tree::rotateleft(node* q)
 		root = p;
 	}
 	q->right = p->left;
-	q->right->parent = q;
+	if (q->right) 
+		q->right->parent = q;
 	p->left = q;
 	p->parent = q->parent;
 	q->parent = p;
+	if (p->parent)
+		p->parent->right = p;
 	fixheight(q);
 	fixheight(p);
 	return p;
@@ -188,10 +192,13 @@ node* tree::rotateright(node* p)
 		root = q;
 	}
 	p->left = q->right;
-	p->left->parent = p;
+	if (p->left)
+		p->left->parent = p;
 	q->right = p;
 	q->parent = p->parent;
 	p->parent = q;
+	if (q->parent)
+		q->parent->left = q;
 	fixheight(p);
 	fixheight(q);
 	return q;
@@ -240,11 +247,9 @@ void tree::insert(node * r, int& v) {
 	}
 	if (v < r->val && r->left) {
 		insert(r->left, v);
-		return;
 	}
 	if (v >= r->val && r->right) {
 		insert(r->right, v);
-		return;
 	}
 	if (v < r->val && !r->left) {
 		node* t = new node();
@@ -252,8 +257,6 @@ void tree::insert(node * r, int& v) {
 		size++;
 		t->parent = r;
 		r->left = t;
-		balance(r);
-		return;
 	}
 	if (v >= r->val && !r->right) {
 		node* t = new node();
@@ -261,7 +264,7 @@ void tree::insert(node * r, int& v) {
 		size++;
 		t->parent = r;
 		r->right = t;
-	}
+	} 
 	balance(r);
 }
 
@@ -316,11 +319,11 @@ void tree::print_tree()
 	cout << endl;
 }
 
-void tree::Erase(int& v) {
-	erase(search_by_val(v), v);
+void tree::Erase(int v) {
+	erase(root, v);
 }
 
-node * tree::search_by_val(int& v)
+node * tree::search_by_val(int v)
 {
 	return search(root, v);
 }
