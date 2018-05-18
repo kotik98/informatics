@@ -27,19 +27,17 @@ public:
 
     friend istream& operator >> (istream& is, Vector2D& v);
 
-    bool operator== (const Vector2D& v2);
+    bool operator== (const Vector2D& v2) const ;
 
-    bool operator!= (const Vector2D& v2);
+    bool operator!= (const Vector2D& v2) const ;
 
     Vector2D operator+ (const Vector2D& v2);
 
     Vector2D operator- (const Vector2D& v2);
 
-    friend int operator*(Vector2D& v1, Vector2D& v2);
+    int operator*(Vector2D& v1) const;
 
     Vector2D operator* (int a);
-
-    Vector2D operator* (Matrix2D& m);
 };
 
 class Matrix2D {
@@ -56,52 +54,48 @@ public:
         c = x2;
         d = y2;
     }
-    int get(string s) const{
-        if (s == "a"){
-            return a;
-        }
-        if (s == "b"){
-            return b;
-        }
-        if (s == "c"){
-            return c;
-        }
-        if (s == "d"){
-            return d;
-        }
+    int getA() const{
+        return a;
     }
-    int set(const string &s, int arg) {
-        if (s == "a"){
-             a = arg;
-        }
-        if (s == "b"){
-            b = arg;
-        }
-        if (s == "c"){
-            c = arg;
-        }
-        if (s == "d"){
-            d = arg;
-        }
+    int getB() const{
+        return b;
     }
-    Matrix2D operator* (int a);
+    int getC() const{
+        return c;
+    }
+    int getD() const{
+        return d;
+    }
+    void setA(int arg) {
+        a = arg;
+    }
+    void setB(int arg) {
+        b = arg;
+    }
+    void setC(int arg) {
+        c = arg;
+    }
+    void setD(int arg) {
+        d = arg;
+    }
+    Matrix2D operator* (int a) const;
     Vector2D operator* (Vector2D& v);
-    Matrix2D operator* (Matrix2D& m);
-    Matrix2D operator+ (Matrix2D& m);
-    Matrix2D operator- (Matrix2D& m);
+    Matrix2D operator* (Matrix2D& m) const ;
+    Matrix2D operator+ (Matrix2D& m) const ;
+    Matrix2D operator- (Matrix2D& m) const ;
     friend Matrix2D operator*(int a, Matrix2D& m);
 
     bool operator==(const Matrix2D &rhs) const;
 
     bool operator!=(const Matrix2D &rhs) const;
 
-    int determinant();
+    int determinant() const ;
 
     friend ostream& operator<<(ostream& os, const Matrix2D& m);
     friend istream& operator >> (istream& is, Matrix2D& m);
 };
 
-Matrix2D Matrix2D::operator* (int arg) {
+Matrix2D Matrix2D::operator* (int arg) const {
     Matrix2D* matrix2D = new Matrix2D(a * arg, b * arg, c * arg, d * arg);
     return *matrix2D;
 }
@@ -114,46 +108,46 @@ Vector2D Matrix2D::operator*(Vector2D &v) {
     return *vector2D;
 }
 
-int Matrix2D::determinant() {
+int Matrix2D::determinant() const {
     return a * d - c * b;
 }
 
-Matrix2D Matrix2D::operator*(Matrix2D& m) {
-    int a3 = a * m.get("a") + b * m.get("c");
-    int b3 = a * m.get("b") + b * m.get("d");
-    int c3 = c * m.get("a") + d * m.get("c");
-    int d3 = c * m.get("b") + d * m.get("d");
+Matrix2D Matrix2D::operator*(Matrix2D& m) const {
+    int a3 = a * m.a + b * m.c;
+    int b3 = a * m.b + b * m.d;
+    int c3 = c * m.a + d * m.c;
+    int d3 = c * m.b + d * m.d;
     return Matrix2D(a3, b3, c3, d3);
 }
 
-Matrix2D Matrix2D::operator+(Matrix2D &m) {
-    return Matrix2D(a + m.get("a"), b + m.get("b"), c + m.get("c"), d + m.get("d"));
+Matrix2D Matrix2D::operator+(Matrix2D &m) const {
+    return Matrix2D(a + m.a, b + m.b, c + m.c, d + m.d);
 }
 
-Matrix2D Matrix2D::operator-(Matrix2D &m) {
-    return Matrix2D(a - m.get("a"), b - m.get("b"), c - m.get("c"), d - m.get("d"));
+Matrix2D Matrix2D::operator-(Matrix2D &m) const {
+    return Matrix2D(a - m.a, b - m.b, c - m.c, d - m.d);
 }
 
 ostream& operator<<(ostream& os, const Matrix2D& m) {
-    os << m.get("a") << ' ' << m.get("b") << '\n' << m.get("c") << ' ' << m.get("d") << endl;
+    os << m.a << ' ' << m.b << '\n' << m.c << ' ' << m.d << endl;
     return os;
 }
 
 istream& operator >> (istream& is, Matrix2D& m) {
     int a, b, c, d;
     is >> a >> b >> c >> d;
-    m.set("a", a);
-    m.set("b", b);
-    m.set("c", c);
-    m.set("d", d);
+    m.setA(a);
+    m.setB(b);
+    m.setC(c);
+    m.setD(d);
     return is;
 }
 
 bool Matrix2D::operator==(const Matrix2D &rhs) const {
-    return a == rhs.get("a") &&
-           b == rhs.get("b") &&
-           c == rhs.get("c") &&
-           d == rhs.get("d");
+    return a == rhs.a &&
+           b == rhs.b &&
+           c == rhs.c &&
+           d == rhs.d;
 }
 
 bool Matrix2D::operator!=(const Matrix2D &rhs) const {
@@ -161,11 +155,6 @@ bool Matrix2D::operator!=(const Matrix2D &rhs) const {
 }
 
 //----------------------------------------------
-
-Vector2D Vector2D::operator*(Matrix2D& m) {
-    Vector2D* vector2D = new Vector2D(m.get("a") * x + m.get("c") * y, m.get("b") * x + m.get("d") * y);
-    return *vector2D;
-}
 
 Vector2D::Vector2D(int x, int y) {
     this->x = x;
@@ -177,18 +166,18 @@ ostream& operator<<(ostream &os, const Vector2D &v) {
     return  os;
 }
 
-bool Vector2D::operator==(const Vector2D &v2) {
-    return this->getX() == v2.getX() && this->getY() == v2.getY();
+bool Vector2D::operator==(const Vector2D &v2) const {
+    return this->x == v2.x && this->y == v2.y;
 }
 
-bool Vector2D::operator!=(const Vector2D &v2) {
+bool Vector2D::operator!=(const Vector2D &v2) const {
     return !(*this == v2);
 }
 
 Vector2D Vector2D::operator+(const Vector2D &v2) {
     Vector2D res;
-    res.setX(this->getX() + v2.getX());
-    res.setY(this->getX() + v2.getY());
+    res.setX(this->x + v2.x);
+    res.setY(this->y + v2.y);
     return res;
 }
 
@@ -216,11 +205,11 @@ istream& operator >> (std::istream &is, Vector2D &v) {
 
 Vector2D Vector2D::operator-(const Vector2D &v2) {
     Vector2D res;
-    res.setX(this->getX() - v2.getX());
-    res.setY(this->getX() - v2.getY());
+    res.setX(this->x - v2.x);
+    res.setY(this->y - v2.y);
     return res;
 }
 
-int operator*(Vector2D &v1, Vector2D &v2) {
-    return v1.getX() * v2.getX() + v1.getY() * v2.getY();
+int Vector2D::operator*(Vector2D &v1) const{
+    return v1.x * x + v1.y * y;
 }
